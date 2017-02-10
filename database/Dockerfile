@@ -6,9 +6,9 @@ FROM debian:jessie
 MAINTAINER Yvonnick Esnault <yvonnick@esnau.lt>
 
 ENV DEBIAN_FRONTEND noninteractive \
-  DEBCONF_NONINTERACTIVE_SEEN true
+    DEBCONF_NONINTERACTIVE_SEEN true
 
-RUN apt-get update -yqq\
+RUN apt-get update -yqq \
   && apt-get install -y \
       curl \
       mysql-server

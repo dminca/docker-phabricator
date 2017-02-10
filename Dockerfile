@@ -3,13 +3,13 @@
 #
 
 FROM debian:jessie
-MAINTAINER  Yvonnick Esnault <yvonnick@esnau.lt>
+MAINTAINER Yvonnick Esnault <yvonnick@esnau.lt>
 
 ENV DEBIAN_FRONTEND=noninteractive \
-  DEBCONF_NONINTERACTIVE_SEEN=true
+    DEBCONF_NONINTERACTIVE_SEEN=true
 
 # TODO: review this dependency list
-RUN apt-get update && 
+RUN apt-get update -yqq && \
     apt-get install -y \
       git \
       apache2 \
@@ -37,7 +37,7 @@ RUN apt-get update &&
 
 # For some reason phabricator doesn't have tagged releases. To support
 # repeatable builds use the latest SHA
-ADD     download.sh /opt/download.sh
+ADD download.sh /opt/download.sh
 
 ARG PHABRICATOR_COMMIT=79f2e81f38
 ARG ARCANIST_COMMIT=c304c4e045
@@ -51,10 +51,10 @@ RUN set -x \
 
 # Setup apache
   && a2enmod rewrite
-ADD     phabricator.conf /etc/apache2/sites-available/phabricator.conf
-RUN     ln -s /etc/apache2/sites-available/phabricator.conf \
-            /etc/apache2/sites-enabled/phabricator.conf && \
-        rm -f /etc/apache2/sites-enabled/000-default.conf
+ADD phabricator.conf /etc/apache2/sites-available/phabricator.conf
+RUN ln -s /etc/apache2/sites-available/phabricator.conf \
+        /etc/apache2/sites-enabled/phabricator.conf && \
+    rm -f /etc/apache2/sites-enabled/000-default.conf
 
 # Setup phabricator
 RUN mkdir -p /opt/phabricator/conf/local /var/repo
@@ -68,6 +68,6 @@ RUN sed -e 's/post_max_size =.*/post_max_size = 32M/' \
   && echo "www-data ALL=(ALL) SETENV: NOPASSWD: /opt/phabricator/support/bin/git-http-backend" >> /etc/sudoers
 
 EXPOSE  80
-ADD     entrypoint.sh /entrypoint.sh
+ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-CMD     ["start-server"]
+CMD ["start-server"]

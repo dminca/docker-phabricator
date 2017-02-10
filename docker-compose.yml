@@ -13,4 +13,3 @@ services:
 
   database:
       build: database/
-

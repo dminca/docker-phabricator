@@ -9,51 +9,53 @@ ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
     PHABRICATOR_COMMIT=79f2e81f38 \
     ARCANIST_COMMIT=c304c4e045 \
-    LIBPHUTIL_COMMIT=55f554b618 \
-    PACKAGE={phabricator,arcanist,libphutil}
-ENV SHA={$PHABRICATOR_COMMIT,$ARCANIST_COMMIT,$LIBPHUTIL_COMMIT}
+    LIBPHUTIL_COMMIT=55f554b618
 
-# TODO: review this dependency list
-RUN apt-get update -yqq && \
-    apt-get install -y \
-      git \
-      apache2 \
-      curl \
-      libapache2-mod-php5 \
-      libmysqlclient18 \
-      mercurial \
-      mysql-client \
-      php-apc \
-      php5 \
-      php5-apcu \
-      php5-cli \
-      php5-curl \
-      php5-gd \
-      php5-json \
-      php5-ldap \
-      php5-mysql \
-      python-pygments \
-      sendmail \
-      subversion \
-      tar \
-      sudo \
-      && apt-get clean \
-      && rm -rf /var/lib/apt/lists/*
+RUN set -x \
+  && apt-get update -yqq \
+  && apt-get install -y \
+    git \
+    apache2 \
+    curl \
+    libapache2-mod-php5 \
+    libmysqlclient18 \
+    mercurial \
+    mysql-client \
+    php-apc \
+    php5 \
+    php5-apcu \
+    php5-cli \
+    php5-curl \
+    php5-gd \
+    php5-json \
+    php5-ldap \
+    php5-mysql \
+    python-pygments \
+    sendmail \
+    subversion \
+    tar \
+    sudo \
+  && apt-get clean -y \
+  && rm -rfv /var/lib/apt/lists/*
 
 WORKDIR /opt
 RUN set -x \
-  curl -L https://github.com/phacility/${PACKAGE}/archive/${SHA}.tar.gz | tar -xzf - \
+  curl -L https://github.com/phacility/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar -xzf - \
+  curl -L https://github.com/phacility/arcanist/archive/${ARCANIST_COMMIT}.tar.gz | tar -xzf - \
+  curl -L https://github.com/phacility/libphutil/archive/${LIBPHUTIL_COMMIT}.tar.gz | tar -xzf - \
   # The archive contains a directory with the sha, move it to a path without it
-  mv ${PACKAGE}-${SHA}* ${PACKAGE} \
+  mv phabricator-${PHABRICATOR_COMMIT}* phabricator \
+  mv arcanist-${ARCANIST_COMMIT}* arcanist \
+  mv libphutil-${LIBPHUTIL_COMMIT}* libphutil \
 
-# Setup apache
+  # Setup apache
   && a2enmod rewrite
 ADD phabricator.conf /etc/apache2/sites-available/phabricator.conf
 RUN ln -s /etc/apache2/sites-available/phabricator.conf \
         /etc/apache2/sites-enabled/phabricator.conf && \
     rm -f /etc/apache2/sites-enabled/000-default.conf
 
-# Setup phabricator
+  # Setup phabricator
 RUN mkdir -p /opt/phabricator/conf/local /var/repo
 ADD local.json /opt/phabricator/conf/local/local.json
 RUN sed -e 's/post_max_size =.*/post_max_size = 32M/' \

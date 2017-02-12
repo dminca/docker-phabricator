@@ -6,7 +6,12 @@ FROM debian:jessie
 MAINTAINER Yvonnick Esnault <yvonnick@esnau.lt>
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    DEBCONF_NONINTERACTIVE_SEEN=true
+    DEBCONF_NONINTERACTIVE_SEEN=true \
+    PHABRICATOR_COMMIT=79f2e81f38 \
+    ARCANIST_COMMIT=c304c4e045 \
+    LIBPHUTIL_COMMIT=55f554b618 \
+    PACKAGE={phabricator,arcanist,libphutil}
+ENV SHA={$PHABRICATOR_COMMIT,$ARCANIST_COMMIT,$LIBPHUTIL_COMMIT}
 
 # TODO: review this dependency list
 RUN apt-get update -yqq && \
@@ -35,19 +40,11 @@ RUN apt-get update -yqq && \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/*
 
-# For some reason phabricator doesn't have tagged releases. To support
-# repeatable builds use the latest SHA
-ADD download.sh /opt/download.sh
-
-ARG PHABRICATOR_COMMIT=79f2e81f38
-ARG ARCANIST_COMMIT=c304c4e045
-ARG LIBPHUTIL_COMMIT=55f554b618
-
 WORKDIR /opt
 RUN set -x \
-  && ./download.sh phabricator $PHABRICATOR_COMMIT \
-  && ./download.sh arcanist    $ARCANIST_COMMIT \
-  && ./download.sh libphutil   $LIBPHUTIL_COMMIT \
+  curl -L https://github.com/phacility/${PACKAGE}/archive/${SHA}.tar.gz | tar -xzf - \
+  # The archive contains a directory with the sha, move it to a path without it
+  mv ${PACKAGE}-${SHA}* ${PACKAGE} \
 
 # Setup apache
   && a2enmod rewrite

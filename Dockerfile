@@ -40,14 +40,10 @@ RUN set -x \
 
 WORKDIR /opt
 RUN set -x \
-  tar xvf poop.tar.gz -C caca --strip-components 1 \
-  curl -L https://github.com/phacility/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar -xzf - \
-  curl -L https://github.com/phacility/arcanist/archive/${ARCANIST_COMMIT}.tar.gz | tar -xzf - \
-  curl -L https://github.com/phacility/libphutil/archive/${LIBPHUTIL_COMMIT}.tar.gz | tar -xzf - \
-  # The archive contains a directory with the sha, move it to a path without it
-  mv phabricator-${PHABRICATOR_COMMIT}* phabricator \
-  mv arcanist-${ARCANIST_COMMIT}* arcanist \
-  mv libphutil-${LIBPHUTIL_COMMIT}* libphutil \
+  && mkdir -v phabricator arcanist libphutil \
+  && curl -L https://github.com/phacility/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar xzf - --strip-components 1 -C phabricator \
+  && curl -L https://github.com/phacility/arcanist/archive/${ARCANIST_COMMIT}.tar.gz | tar xzf - --strip-components 1 -C arcanist \
+  && curl -L https://github.com/phacility/libphutil/archive/${LIBPHUTIL_COMMIT}.tar.gz | tar xzf - --strip-components 1 -C libphutil \
 
   # Setup apache
   && a2enmod rewrite

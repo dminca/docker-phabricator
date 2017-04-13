@@ -2,8 +2,8 @@
 
 if [ -z "${LOCAL_JSON}" ]; then
   [ -z "${MYSQL_HOST}" ] && export MYSQL_HOST="database"
-  [ -z "${MYSQL_USER}" ] && export MYSQL_USER="admin"
-  [ -z "${MYSQL_PASS}" ] && export MYSQL_PASS="admin"
+  [ -z "${MYSQL_USER}" ] && export MYSQL_USER=${MYSQL_USER:-"admin"}
+  [ -z "${MYSQL_PASS}" ] && export MYSQL_PASS=${MYSQL_PASSWORD:-"admin"}
 
   # Patching the settings file.
   sed -e "s/{{MYSQL_HOST}}/${MYSQL_HOST}/g" \

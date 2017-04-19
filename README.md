@@ -1,45 +1,24 @@
-docker-phabricator
-==================
-A docker composition for Phabricator :
-- One container used by mysql, see https://github.com/yesnault/docker-phabricator/tree/master/database
-- One container used by apache (phabricator)
+# Phabricator by Phacility on Docker
+Phabricator (pronounced like the word fabricator) is a suite of web applications which make it easier to build software, particularly when working with teams. Phabricator is largely based on Facebook's internal tools.
 
-Run with image from hub.docker.com
-----
-Run a mysql container :
-```
-docker run --name databasePhabricator yesnault/docker-phabricator-mysql
-```
+The major components of Phabricator are:
+- **Differential**, a code review tool; and
+- **Diffusion**, a repository browser; and
+- **Maniphest**, a bug tracker; and
+- **Phriction**, a wiki.
 
-Run phabricator :
-```
-docker run -p 8081:80 --link databasePhabricator:database yesnault/docker-phabricator 
-```
-Go to http://localhost:8081
+Phabricator also includes a number of smaller tools.
 
-Running on OSX
--------
+## Prerequisites
+For the app to function properly, the following [**MUST**][1] be present:
+- basic LNMP configuration
+  - PHP v5+
+  - PHP-FPM
+- MySQL
 
-Requires
+The following [**SHOULD**][1] also be installed:
+- APC ( `pecl install apc` ) via [`php-pear`][2]
 
-  * boot2docker
+[1]: https://tools.ietf.org/html/rfc2119
+[2]: http://pkgs.alpinelinux.org/packages?name=php-pear
 
-  * docker
-
-From a terminal, execute:
-
-```
-docker-compose up
-```
-
-and then execute
-
-```
-boot2docker ip
-```
-
-Then open up a browser and navigate to
-
-```
-http://{boot2docker ip}:8081
-```

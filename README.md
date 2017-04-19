@@ -12,7 +12,7 @@ Phabricator also includes a number of smaller tools.
 ## Prerequisites
 For the app to function properly, the following [**MUST**][1] be present:
 - basic LNMP configuration
-  - PHP v5+
+  - PHP v5.2+
   - PHP-FPM
 - MySQL
 

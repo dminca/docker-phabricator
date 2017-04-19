@@ -2,7 +2,7 @@ FROM wizdevops/alpine
 MAINTAINER Daniel Andrei Minca <mandrei17@gmail.com>
 
 RUN set -x \
-	&& apk add --update --no-cache \
+  && apk add --progress --update --no-cache \
     git \
   && mkdir /app; cd /app \
   && for repo in libphutil arcanist phabricator; \

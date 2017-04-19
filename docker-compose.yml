@@ -2,10 +2,19 @@ version: "3.1"
 services:
   phabricator:
       build: ./app
+      depends_on:
+        - database
+        - nginx
       links:
         - database
       ports:
         - 8081:80
+
+  nginx:
+    build: ./nginx-php-fpm
+    ports:
+      - 80
+      - 443
 
   database:
       image: mysql

@@ -2,11 +2,6 @@ version: "3.1"
 services:
   phabricator:
     build: ./app
-    depends_on:
-      - database
-    links:
-      - database
-      - nginx
     ports:
       - 8081:80
     volumes:
@@ -14,6 +9,8 @@ services:
 
   nginx:
     build: ./nginx-php-fpm
+    depends_on:
+      - database
     ports:
       - 80
       - 443

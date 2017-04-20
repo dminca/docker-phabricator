@@ -27,3 +27,6 @@ services:
     ports:
       - 3306
 
+volumes:
+  app-volume:
+

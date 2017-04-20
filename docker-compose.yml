@@ -1,28 +1,32 @@
 version: "3.1"
 services:
   phabricator:
-      build: ./app
-      depends_on:
-        - database
-        - nginx
-      links:
-        - database
-      ports:
-        - 8081:80
+    build: ./app
+    depends_on:
+      - database
+    links:
+      - database
+      - nginx
+    ports:
+      - 8081:80
+    volumes:
+      - app-volume:/app
 
   nginx:
     build: ./nginx-php-fpm
     ports:
       - 80
       - 443
+    volumes:
+      - app-volume:/app
 
   database:
-      image: mysql
-      environment:
-        - MYSQL_ROOT_PASSWORD=changeit
-        - MYSQL_USER=mallory
-        - MYSQL_PASSWORD=changeit
-        - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      ports:
-        - 3306
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=changeit
+      - MYSQL_USER=mallory
+      - MYSQL_PASSWORD=changeit
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3306
 

@@ -1,23 +1,30 @@
 version: "3.1"
-#
-# Optional Volumes:
-#  - /opt/phabricator/conf - configuration
-#  - /var/repo - code repos
-#
-#
 services:
   phabricator:
-      build: .
-      links: 
-        - database
-      ports: 
-        - 8081:80
+    build: ./app
+    volumes:
+      - app-volume:/app
+
+  nginx:
+    build: ./nginx-php-fpm
+    depends_on:
+      - database
+    ports:
+      - 8080:80
+      - 443
+    volumes:
+      - app-volume:/app
 
   database:
-      image: mysql
-      environment:
-        - MYSQL_ROOT_PASSWORD=admin
-        - MYSQL_USER=admin
-        - MYSQL_PASSWORD=admin
-        - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=changeit
+      - MYSQL_USER=mallory
+      - MYSQL_PASSWORD=changeit
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3306
+
+volumes:
+  app-volume:
 

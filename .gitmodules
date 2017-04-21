@@ -1,4 +1,4 @@
 [submodule "nginx-php-fpm"]
 	path = nginx-php-fpm
 	url = git@github.com:WizDevOps/nginx-php-fpm.git
-	branch = master
+	branch = dev
